@@ -1,4 +1,9 @@
 import { useGameStore } from "../store/gameStore";
+import {
+  calculateStatus,
+  calculateTurns,
+  calculateWinner,
+} from "./calculateWinner";
 import { Square } from "./Square";
 
 const Board = () => {
@@ -10,8 +15,12 @@ const Board = () => {
 
   const player = xIsNext ? "X" : "O";
 
+  const winner = calculateWinner(squares);
+  const turns = calculateTurns(squares);
+  const status = calculateStatus(winner, turns, player);
+
   function handleClick(i) {
-    if (squares[i]) return; // Prevent updating if there's already a value
+    if (squares[i] || winner) return; // Prevent updating if there's already a value
     const nextSquares = squares.slice();
     // nextSquares[i] = "X"; // Mark the square with 'X'
     nextSquares[i] = player;
@@ -20,12 +29,13 @@ const Board = () => {
   }
 
   return (
-    <div
-      className="mt-6 rounded-md grid grid-cols-3 grid-rows-3
+    <>
+      <div
+        className="mt-6 rounded-md grid grid-cols-3 grid-rows-3
     w-[calc(3*2.5rem)] h-[calc(3*2.5rem)] 
     border border-gray-400"
-    >
-      {/* <Square value="1" />
+      >
+        {/* <Square value="1" />
       <Square value="1" />
       <Square value="1" />
       <Square value="1" />
@@ -34,17 +44,19 @@ const Board = () => {
       <Square value="1" />
       <Square value="1" />
       <Square value="1" /> */}
-      {squares.map((square, squareIndex) => (
-        <Square
-          key={squareIndex}
-          value={square}
-          onSquareClick={() => handleClick(squareIndex)}
-          //   To connect onSquareClick to handleClick you'll pass
-          // an inline function to the onSquareClick prop of the first
-          // Square component:
-        />
-      ))}
-    </div>
+        {squares.map((square, squareIndex) => (
+          <Square
+            key={squareIndex}
+            value={square}
+            onSquareClick={() => handleClick(squareIndex)}
+            //   To connect onSquareClick to handleClick you'll pass
+            // an inline function to the onSquareClick prop of the first
+            // Square component:
+          />
+        ))}
+      </div>
+      <div className="p-2 mt-4 font-semibold text-green-500">{status}</div>
+    </>
   );
 };
 
