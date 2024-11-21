@@ -5,11 +5,18 @@ const Board = () => {
   const squares = useGameStore((state) => state.squares);
   const setSquares = useGameStore((state) => state.setSquares);
 
+  const xIsNext = useGameStore((state) => state.xIsNext);
+  const setXIsNext = useGameStore((state) => state.setxIsNext);
+
+  const player = xIsNext ? "X" : "O";
+
   function handleClick(i) {
-    if (squares[i]) return;
+    if (squares[i]) return; // Prevent updating if there's already a value
     const nextSquares = squares.slice();
-    nextSquares[i] = "X";
-    setSquares(nextSquares);
+    // nextSquares[i] = "X"; // Mark the square with 'X'
+    nextSquares[i] = player;
+    setSquares(nextSquares); // Update the game state
+    setXIsNext(!xIsNext); //State is updated if its not 'X'
   }
 
   return (
